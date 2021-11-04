@@ -1,0 +1,2 @@
+fecha	cp	minsplit	minbucket	maxdepth	xval_folds	ganancia
+20210906 114039	-0.0503779272985411	6184	1159	8	5	2630000

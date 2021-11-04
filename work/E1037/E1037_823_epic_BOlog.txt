@@ -1,0 +1,3 @@
+fecha	objective	metric	first_metric_only	boost_from_average	feature_pre_filter	verbosity	seed	max_depth	min_gain_to_split	lambda_l1	lambda_l2	max_bin	bagging_fraction	num_iterations	force_row_wise	learning_rate	feature_fraction	min_data_in_leaf	num_leaves	ratio_corte	iteracion_bayesiana	ganancia
+20211016 004442	binary	custom	TRUE	TRUE	FALSE	-100	999983	-1	0	0	0	31	0.632	154	TRUE	0.0335621051102935	0.739200035833637	2492	305	0.0315078563918256	1	8013124.9558
+20211016 005824	binary	custom	TRUE	TRUE	FALSE	-100	999983	-1	0	0	0	31	0.632	221	TRUE	0.0283392609599687	0.676894940346101	2319	713	0.0321536920245565	2	8005624.9560375
