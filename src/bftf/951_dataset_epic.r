@@ -24,7 +24,7 @@ palancas  <- list()  #variable con las palancas para activar/desactivar
 
 palancas$version  <- "v951"   #Muy importante, ir cambiando la version
 
-palancas$variablesdrift  <- c()   #aqui van las columnas que se quieren eliminar
+palancas$variablesdrift  <- c("internet", "mcaja_ahorro_dolares", "mpayroll", "matm_other", "tmobile_app", "cmobile_app_trx")   #aqui van las columnas que se quieren eliminar
 
 palancas$corregir <-  TRUE    # TRUE o FALSE
 
@@ -32,35 +32,35 @@ palancas$nuevasvars <-  FALSE  #si quiero hacer Feature Engineering manual
 
 palancas$dummiesNA  <-  FALSE #La idea de Santiago Dellachiesa
 
-palancas$lag1   <- FALSE    #lag de orden 1
-palancas$delta1 <- FALSE    # campo -  lag de orden 1 
-palancas$lag2   <- FALSE
-palancas$delta2 <- FALSE
-palancas$lag3   <- FALSE
-palancas$delta3 <- FALSE
-palancas$lag4   <- FALSE
-palancas$delta4 <- FALSE
-palancas$lag5   <- FALSE
-palancas$delta5 <- FALSE
-palancas$lag6   <- FALSE
-palancas$delta6 <- FALSE
+palancas$lag1   <- TRUE    #lag de orden 1
+palancas$delta1 <- TRUE    # campo -  lag de orden 1 
+palancas$lag2   <- TRUE
+palancas$delta2 <- TRUE
+palancas$lag3   <- TRUE
+palancas$delta3 <- TRUE
+palancas$lag4   <- TRUE
+palancas$delta4 <- TRUE
+palancas$lag5   <- TRUE
+palancas$delta5 <- TRUE
+palancas$lag6   <- TRUE
+palancas$delta6 <- TRUE
 
-palancas$promedio3  <- FALSE  #promedio  de los ultimos 3 meses
-palancas$promedio6  <- FALSE
+palancas$promedio3  <- TRUE  #promedio  de los ultimos 3 meses
+palancas$promedio6  <- TRUE
 
-palancas$minimo3  <- FALSE  #minimo de los ultimos 3 meses
-palancas$minimo6  <- FALSE
+palancas$minimo3  <- TRUE  #minimo de los ultimos 3 meses
+palancas$minimo6  <- TRUE
 
-palancas$maximo3  <- FALSE  #maximo de los ultimos 3 meses
-palancas$maximo6  <- FALSE
+palancas$maximo3  <- TRUE  #maximo de los ultimos 3 meses
+palancas$maximo6  <- TRUE
 
-palancas$ratiomax3   <- FALSE   #La idea de Daiana Sparta
-palancas$ratiomean6  <- FALSE   #Un derivado de la idea de Daiana Sparta
+palancas$ratiomax3   <- TRUE   #La idea de Daiana Sparta
+palancas$ratiomean6  <- TRUE   #Un derivado de la idea de Daiana Sparta
 
-palancas$tendencia6  <- FALSE    #Great power comes with great responsability
+palancas$tendencia6  <- TRUE    #Great power comes with great responsability
 
 
-palancas$canaritosimportancia  <- FALSE  #si me quedo solo con lo mas importante de canaritosimportancia
+palancas$canaritosimportancia  <- TRUE  #si me quedo solo con lo mas importante de canaritosimportancia
 
 
 #escribo para saber cuales fueron los parametros
@@ -279,6 +279,163 @@ AgregarVariables  <- function( dataset )
 
   #Aqui debe usted agregar sus propias nuevas variables
 
+  #VARIABLES QUE INTENTO CREAR YO
+  
+  #CONSUMO TARJETAS / SALDO PF
+  
+  dataset[ , V1                      :=(Master_mconsumototal+Visa_mconsumototal)/mplazo_fijo_pesos]
+  
+  #CONSUMO TARJETAS / SALDO en Cuentas convertido todo a $
+  
+  dataset[ , V2                      :=(Master_mconsumototal+Visa_mconsumototal)/mcuentas_saldo]
+  
+  # PAGO SUELDO / LIMITE TARJETA. Si cobro mucho puede que sea indemnización y tal vez luego de cobrar eso se vaya del banco
+  #V3 con Master
+  dataset[ , V3                       :=mpayroll/Master_mlimitecompra]
+  #V4 con Visa
+  dataset[ , V4                       :=mpayroll/Visa_mlimitecompra]
+  
+  #EDAD con Saldo caja de Ahorro
+  
+  dataset[ , V5                       := mcaja_ahorro/cliente_edad]
+  
+  #Antiguedad cliente con Saldo
+  
+  dataset[ , V6                        :=mcaja_ahorro/(cliente_antiguedad/12)]
+  
+  #USO AHORA ALGUNAS DE LAS QUE OBTUVE COMO MÁS IMPORTANTES
+  
+  dataset[ , V7                        :=(mpayroll+mpayroll2)/cpayroll_trx]
+  
+  dataset[ , V8                        :=mtarjeta_visa_consumo/ctarjeta_visa_transacciones ]
+  
+  dataset[ , V9                        :=mtarjeta_visa_consumo/(mcomisiones_otras+mcomisiones_mantenimiento) ]
+  
+  dataset[ , V9b                        :=1/V9 ]
+  
+  dataset[ , V10                       :=mtarjeta_visa_consumo/(ccomisiones_mantenimiento+ccomisiones_otras) ]
+  
+  dataset[ , V11                       :=mtarjeta_visa_consumo/Visa_msaldopesos ]
+  
+  dataset[ , V11b                       :=1/V11 ]
+  
+  
+  dataset[ , V12                       :=ctarjeta_visa_transacciones/(ccomisiones_mantenimiento+ccomisiones_otras) ]
+  
+  dataset[ , V13                       :=1/(ctarjeta_visa_transacciones/Visa_msaldopesos)]
+  
+  dataset[ , V14                       :=1/(ctarjeta_visa_transacciones/(mcomisiones_otras+mcomisiones_mantenimiento))]
+  
+  dataset[ , V15                       :=(mcomisiones_mantenimiento+mcomisiones_otras)/(ccomisiones_mantenimiento+ccomisiones_otras)]
+  
+  dataset[ , V16                       :=mtarjeta_visa_consumo/cpayroll_trx]
+  
+  dataset[ , V17                       :=mcuentas_saldo/cpayroll_trx]
+  
+  dataset[ , V18                       :=Visa_msaldototal/cpayroll_trx]
+  
+  dataset[ , V19                       :=mprestamos_personales/cpayroll_trx]
+  
+  dataset[ , V20                       :=mcuenta_corriente/cpayroll_trx]
+  
+  dataset[ , V21                       :=mpasivos_margen/cpayroll_trx]
+  
+  dataset[ , V22                       :=Visa_msaldopesos/cpayroll_trx]
+  
+  dataset[ , V23                       :=mrentabilidad_annual/cpayroll_trx]
+  
+  dataset[ , V24                       :=mcomisiones_mantenimiento/cpayroll_trx]
+  
+  dataset[ , V25                       :=mrentabilidad/cpayroll_trx]
+  
+  dataset[ , V26                       :=mcomisiones_otras/cpayroll_trx]
+  
+  dataset[ , V27                       :=mcomisiones/cpayroll_trx]
+  
+  dataset[ , V28                       :=ccomisiones_otras/cpayroll_trx]
+  
+  dataset[ , V29                       :=ccomisiones_mantenimiento/cpayroll_trx]
+  
+  dataset[ , V30                       :=mautoservicio/cpayroll_trx]
+  
+  dataset[ , V31                       :=ctarjeta_debito_transacciones/cpayroll_trx]
+  
+  dataset[ , V32                       :=Visa_mpagominimo/cpayroll_trx]
+  
+  dataset[ , V33                       :=mtarjeta_visa_consumo/mcuentas_saldo]
+  
+  dataset[ , V33b                       :=1/(mtarjeta_visa_consumo/mcuentas_saldo)]
+  
+  dataset[ , V34                       :=mtarjeta_visa_consumo/Visa_msaldototal]
+  
+  dataset[ , V34b                       :=1/(mtarjeta_visa_consumo/Visa_msaldototal)]
+  
+  dataset[ , V35                       :=mtarjeta_visa_consumo/mprestamos_personales]
+  
+  dataset[ , V35b                       :=1/(mtarjeta_visa_consumo/mprestamos_personales)]
+  
+  dataset[ , V36                       :=mtarjeta_visa_consumo/mcuenta_corriente]
+  
+  dataset[ , V36b                       :=1/V36]
+  
+  dataset[ , V37                       :=mtarjeta_visa_consumo/mpasivos_margen]
+  
+  dataset[ , V37b                       :=1/V37]
+  
+  
+  dataset[ , V38                       :=mtarjeta_visa_consumo/Visa_msaldopesos]
+  
+  dataset[ , V38b                       :=1/V38]
+  
+  dataset[ , V39                       :=mtarjeta_visa_consumo/mrentabilidad_annual]
+  
+  dataset[ , V39b                       :=1/V39]
+  
+  dataset[ , V40                      :=mtarjeta_visa_consumo/mcomisiones_mantenimiento]
+  
+  dataset[ , V40b                      :=1/V40]
+  
+  dataset[ , V41                      :=mtarjeta_visa_consumo/mrentabilidad]
+  
+  dataset[ , V41b                      :=1/V41]
+  
+  dataset[ , V42                      :=mtarjeta_visa_consumo/mcomisiones_otras]
+  
+  dataset[ , V42b                      :=1/V42]
+  
+  dataset[ , V43                      :=mtarjeta_visa_consumo/mcomisiones]
+  
+  dataset[ , V43b                      :=1/V43]
+  
+  dataset[ , V44                      :=mtarjeta_visa_consumo/mautoservicio]
+  
+  dataset[ , V44b                      :=1/V44]
+  
+  dataset[ , V45                      :=mtarjeta_visa_consumo/Visa_mpagominimo]
+  
+  dataset[ , V45b                      :=1/V45]
+  
+  dataset[ , V46                      :=mcuentas_saldo/ctarjeta_visa_transacciones]
+  
+  dataset[ , V46b                      :=1/V46]
+  
+  dataset[ , V47                      :=mcuentas_saldo/Visa_msaldototal]
+  
+  dataset[ , V47b                      :=1/V47]
+  
+  dataset[ , V48                      :=mcuentas_saldo/mprestamos_personales]
+  
+  dataset[ , V48b                      :=1/V48]
+  
+  dataset[ , V49                      :=mcuentas_saldo/mcuenta_corriente]
+  
+  dataset[ , V49b                      :=1/V49]
+  
+  dataset[ , V50                      :=mcuentas_saldo/mpasivos_margen]
+  
+  dataset[ , V50b                      :=1/V50]
+  
+  
   #valvula de seguridad para evitar valores infinitos
   #paso los infinitos a NULOS
   infinitos      <- lapply(names(dataset),function(.name) dataset[ , sum(is.infinite(get(.name)))])
