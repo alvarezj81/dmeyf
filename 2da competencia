@@ -1,0 +1,247 @@
+951
+
+todas las palancas menos 4 en TRUE
+
++ canaritos TRUE
+
+con las hasta las v 50 b
+
+"internet", "mcaja_ahorro_dolares", "mpayroll", "matm_other", "tmobile_app", "cmobile_app_trx"
+
+
+makeIntegerParam("lambda_l1",        lower= 0.0      , upper=100),
+#   makeIntegerParam("lambda_l2",        lower= 0.0      , upper=200)
+
+----------
+
+952
+
+palancas corregir TRUE
+
+palancas nuevasvars TRUE
+
+TRUE en lag1 y delta1
+
++ canaritos TRUE
+
+con las hasta las v 50 b
+
+"internet", "mcaja_ahorro_dolares", "mpayroll", "matm_other", "tmobile_app", "cmobile_app_trx"
+
+
+makeIntegerParam("lambda_l1",        lower= 0.0      , upper=100),
+#   makeIntegerParam("lambda_l2",        lower= 0.0      , upper=200)
+
+
+
+---------------
+
+
+
+
+-----------------
+981
+
+kgen_mes_desde <- 201910
+
+VARIABLES A QUITAR
+
+"internet", "mcaja_ahorro_dolares", "mpayroll", "matm_other", "tmobile_app", "cmobile_app_trx"
+
+
+SETSEED 199
+
+------
+
+
+2do 951 v953
+
+
+v953
+
+
+palancas$variablesdrift  <- c("internet", "mcaja_ahorro_dolares", "matm_other", "tmobile_app", "cmobile_app_trx")   #aqui van las columnas que se quieren eliminar
+
+  #VARIABLES QUE INTENTO CREAR YO
+  
+  #CONSUMO TARJETAS / SALDO PF
+  
+  dataset[ , V1                      :=(Master_mconsumototal+Visa_mconsumototal)/mplazo_fijo_pesos]
+  
+  #CONSUMO TARJETAS / SALDO en Cuentas convertido todo a $
+  
+  dataset[ , V2                      :=(Master_mconsumototal+Visa_mconsumototal)/mcuentas_saldo]
+  
+  # PAGO SUELDO / LIMITE TARJETA. Si cobro mucho puede que sea indemnización y tal vez luego de cobrar eso se vaya del banco
+  #V3 con Master
+  dataset[ , V3                       :=mpayroll/Master_mlimitecompra]
+  #V4 con Visa
+  dataset[ , V4                       :=mpayroll/Visa_mlimitecompra]
+  
+  #EDAD con Saldo caja de Ahorro
+  
+  dataset[ , V5                       := mcaja_ahorro/cliente_edad]
+  
+  #Antiguedad cliente con Saldo
+  
+  dataset[ , V6                        :=mcaja_ahorro/(cliente_antiguedad/12)]
+  
+  #USO AHORA ALGUNAS DE LAS QUE OBTUVE COMO MÁS IMPORTANTES
+  
+  dataset[  ,paste0(mpayroll,'-rank'):=frank(mpayroll)]
+  
+  dataset[  , V7                        :=mprestamos_personales+mprestamos_prendarios+mprestamos_hipotecarios]
+  
+  dataset[   , V8                       :=mprestamos_personales/V7]
+  
+  dataset[   , V9                       :=mprestamos_prendarios/V7]
+  
+  dataset[   , V10                       :=mprestamos_hipotecarios/V7]
+
+-------------------
+
+961 v 953
+
+ktrain_mes_desde    <- 202006
+
+
+ makeIntegerParam("lambda_l1",        lower= 0.0      , upper=100),
+         makeIntegerParam("lambda_l2",        lower= 0.0      , upper=200)
+
+y cambie el max bin a 5 fijo.
+
+El subsampling = 0.1
+
+
+----------
+
+962 v 954
+
+ktrain_mes_desde    <- 202006
+
+makeIntegerParam("lambda_l1",        lower= 0.0      , upper=100),
+         makeIntegerParam("lambda_l2",        lower= 0.0      , upper=200)
+
+y cambie el max bin a 5 fijo.
+
+El subsampling = 0.1
+
+------------
+951 v955
+
+true linea 29 hasta 36
+
+palancas$variablesdrift  <- c("internet", "mcaja_ahorro_dolares", "matm_other", "tmobile_app", "cmobile_app_trx")   #aqui van las columnas que se quieren eliminar
+
+
+V1 hasta V10
+
+  
+  features_to_transform <- c(
+    "ctrx_quarter",
+    "cpayroll_trx",
+    "ctarjeta_visa_transacciones",
+    "mcuentas_saldo",
+    "mtarjeta_visa_consumo",
+    "mpayroll",
+    "V6",
+    "mcaja_ahorro")
+  
+  for (i in 1:length(features_to_transform)) { 
+    col = features_to_transform[i]
+    for (j in 1:length(features_to_transform)){ 
+      col2=features_to_transform[j]
+      if (col != col2) {    
+        col_name = paste0("multiplo_", col, "_", col2)
+        dataset[ , paste0(col_name) := get(col) / get(col2) ]
+      }}}
+
+
+
+------------
+952 v956
+
+todo TRUE
+
+palancas$variablesdrift  <- c("internet", "mcaja_ahorro_dolares", "matm_other", "tmobile_app", "cmobile_app_trx")   #aqui van las columnas que se quieren eliminar
+
+
+#VARIABLES QUE INTENTO CREAR YO
+  
+  #CONSUMO TARJETAS / SALDO PF
+  
+  dataset[ , V1                      :=(Master_mconsumototal+Visa_mconsumototal)/mplazo_fijo_pesos]
+  
+  #CONSUMO TARJETAS / SALDO en Cuentas convertido todo a $
+  
+  dataset[ , V2                      :=(Master_mconsumototal+Visa_mconsumototal)/mcuentas_saldo]
+  
+  # PAGO SUELDO / LIMITE TARJETA. Si cobro mucho puede que sea indemnización y tal vez luego de cobrar eso se vaya del banco
+  #V3 con Master
+  dataset[ , V3                       :=mpayroll/Master_mlimitecompra]
+  #V4 con Visa
+  dataset[ , V4                       :=mpayroll/Visa_mlimitecompra]
+  
+  #EDAD con Saldo caja de Ahorro
+  
+  dataset[ , V5                       := mcaja_ahorro/cliente_edad]
+  
+  #Antiguedad cliente con Saldo
+  
+  dataset[ , V6                        :=mcaja_ahorro/(cliente_antiguedad/12)]
+  
+  #USO AHORA ALGUNAS DE LAS QUE OBTUVE COMO MÁS IMPORTANTES
+  
+  #dataset[  ,paste0(mpayroll,'-rank'):=frank(mpayroll)]
+  
+  dataset[  , V7                        :=mprestamos_personales+mprestamos_prendarios+mprestamos_hipotecarios]
+  
+  dataset[   , V8                       :=mprestamos_personales/V7]
+  
+  dataset[   , V9                       :=mprestamos_prendarios/V7]
+  
+  dataset[   , V10                       :=mprestamos_hipotecarios/V7]
+
+features_to_transform <- c(
+    "mtarjeta_visa_consumo",
+    "ctrx_quarter",
+    "mpayroll",
+    "cpayroll_trx",
+    "mprestamos_personales",
+    "mcaja_ahorro",
+    "ctarjeta_debito_transacciones",
+    "mcuentas_saldo")
+  
+  for (i in 1:length(features_to_transform)) { 
+    col = features_to_transform[i]
+    for (j in 1:length(features_to_transform)){ 
+      col2=features_to_transform[j]
+      if (col != col2) {    
+        col_name = paste0("multiplo_", col, "_", col2)
+        dataset[ , paste0(col_name) := get(col) / get(col2) ]
+      }}}
+  
+-----------------
+
+961 v955
+
+SIGO USANDO EL DATASET 953. QUIERO VER CÓMO ME MODIFICAN LAS COSAS SOLO CAMBIANDO EL MAX_BIN
+
+
+ktrain_mes_desde    <- 202006
+
+                          max_bin=20
+
+----------
+961 v957
+
+sigo usando el dataset 953. 
+ktrain_mes_desde    <- 202006
+                          max_bin=50
+
+----------
+luego haría lo mismo pero cambiando el under sampling a ver qué onda.
+------
+
+
+
