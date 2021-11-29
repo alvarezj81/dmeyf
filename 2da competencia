@@ -243,5 +243,37 @@ ktrain_mes_desde    <- 202006
 luego haría lo mismo pero cambiando el under sampling a ver qué onda.
 ------
 
+952  v970
+
+palancas$variablesdrift  <- c("internet", "mcaja_ahorro_dolares", "matm_other", "tmobile_app", "cmobile_app_trx")   #aqui van las columnas que se quieren eliminar
+
+
+solo true lag1 y delta 1
+
+sí le agregué variables 
+
+este lo quiero usar con el 1420
+
+
+--------
+
+1420 1° lo corrí tal cual cambiando lambda
+
+------
+
+1420 2° lo corri usando el dataset creado por el 952, en la V970
+
+Cambie por mi semilla 
+
+Tambien lo hago entrenar en menos menos 202006 hasta 202009. 06 empieza a subir movilidad y la atencion en los bancos.
+
+
+sin cambiar nada dejé lo demás tal cual estaba. 
+
+El tema es que no sé cuánto puede tardar con este dataset, mucho más grande es. 2gb que tiene el semillerio_dataset_lag1 pasa a 7. DONT KNOW
+
+Y si bajo el under sampling aun más para que corra más rápido?
+
+
 
 
